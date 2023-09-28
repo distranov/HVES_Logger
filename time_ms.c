@@ -1,8 +1,6 @@
 #include <sys/time.h>
 #include <time.h>
-
 #include "time_ms.h"
-
 //-----------------------------------------------------------------------------
 int time_ms_get_datetime(time_ms_struct *td) {
     int res;
