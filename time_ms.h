@@ -5,16 +5,19 @@
 
 #include <stdint.h>
 
-typedef struct {
-    uint64_t year    : 16;
-    uint64_t month   : 4;
-    uint64_t day     : 5;
-    uint64_t hour    : 5;
-    uint64_t minutes : 6;
-    uint64_t seconds : 6;
-    uint64_t msec    : 10;
-} time_ms_struct;
+typedef union {
+    uint64_t u64;
+    struct {
+        uint64_t year    : 16;
+        uint64_t month   : 4;
+        uint64_t day     : 5;
+        uint64_t hour    : 5;
+        uint64_t minutes : 6;
+        uint64_t seconds : 6;
+        uint64_t msec    : 10;
+    } s;
+} time_ms_union;
 
-int time_ms_get_datetime(time_ms_struct *td);
+uint64_t time_ms_get_datetime64(void);
 
 #endif

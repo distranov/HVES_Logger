@@ -36,10 +36,7 @@ can_rb_enum can_rb_read(can_rb_struct *pbuf, can_msg_struct *pmsg);
 
 void can_init(uint32_t baudrate);
 void can_set_filter(uint8_t number, uint32_t filter, uint32_t mask);
-uint8_t can_read(can_msg_struct *msg);
-uint8_t can_write(can_msg_struct *msg);
-
-
-
+can_rb_enum can_read(can_msg_struct *msg);
+can_rb_enum can_write(can_msg_struct *msg);
 
 #endif
