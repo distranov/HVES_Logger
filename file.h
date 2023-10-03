@@ -3,9 +3,8 @@
 
 #include <stdbool.h>
 
-#define PATH "/media/sdcard/hves_archive"
-
 bool file_is_new_name(char *filename);
+void file_write(const char *str);
 
 #endif
 
