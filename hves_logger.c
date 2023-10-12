@@ -1,12 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "can.h"
 #include "file.h"
 #include "time_ms.h"
 
-#define HVES_LOGGER_VERSION 103
+#define HVES_LOGGER_VERSION 104
 
+//-----------------------------------------------------------------------------
+void led_1ms() {
+    static int led_timer = 0;
+    static bool led_on;
+    int ret;
+
+    if(led_timer++ < 100) return;
+    led_timer = 0;
+    led_on = !led_on;
+    if(led_on) ret = system("echo 1 > /sys/class/leds/gledg/brightness");
+    else ret = system("echo 0 > /sys/class/leds/gledg/brightness");
+}
+//-----------------------------------------------------------------------------
 int main() {
     can_msg_struct msg;
     time_ms_union  ts;   
@@ -28,6 +42,7 @@ int main() {
             file_write(s);
         }
         usleep(1000);
+        led_1ms();
     }
     return 0;
 }

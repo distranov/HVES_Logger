@@ -20,6 +20,8 @@
 #define PERMS 0666                     // RW для собственника, группы и ост-х 
 
 //-----------------------------------------------------------------------------
+// new name if a new hour has come
+//-----------------------------------------------------------------------------
 bool file_is_new_name(char *filename) {
     static uint64_t prev_hour = 0;
     time_ms_union t;
@@ -56,6 +58,7 @@ void file_write(const char *str) {
         if(fp == NULL) {
             exit(3); 
         }        
+        int ret = system("./hves_cleaner.bin /media/sdcard/hves_archive *.cxe 1 168 &");
     }
 
     if(fp) {

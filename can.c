@@ -9,8 +9,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-
-
 #include "can.h"
 #include "time_ms.h"
 
@@ -91,7 +89,7 @@ void* thread_body(void* arg) {
 
         can_rb_write(&can_rx_buf, &msg);
 
-        usleep(1000);
+        //usleep(1000);
     }    
     close(can_desc);
 
