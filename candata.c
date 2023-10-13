@@ -13,11 +13,17 @@
 void candata_msg(can_msg_struct *msg) {
     static FILE *fp = NULL;
     static uint32_t prev_hours = 24;
+    static uint32_t prev_sec = 0;
     char filename[200];
     char str[100];
     uint32_t t = 0;
     int ret;
     candata_struct data;
+
+    candata_parser(msg, &data); 
+    t = msg->ts/1000;
+    if(prev_sec == t) return;
+    prev_sec = t;
 
     t = msg->ts/1000/3600 % 24;
     if(prev_hours != t) { 
@@ -29,10 +35,13 @@ void candata_msg(can_msg_struct *msg) {
         if(fp == NULL) exit(3); 
         ret = system("./hves_cleaner.bin /media/sdcard/hves_log *.log 1 168 &");
     }
-    candata_parser(msg, &data); 
-    //if(fp) fwrite(str, 1, strlen(str), fp);  
-
-
+    
+    data.hh = msg->ts/1000/3600 % 24;
+    data.mm = msg->ts/1000/60 % 60;
+    data.ss = msg->ts/1000 % 60;
+    //printf("%02d:%02d:%02d\n", data.hh, data.mm, data.ss);
+    if(fp) fwrite((void*)&data, 1, sizeof(data), fp);  
+    
 }
 //-----------------------------------------------------------------------------
 void candata_parser(can_msg_struct *msg, candata_struct *data) {

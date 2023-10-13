@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "can.h"
 #include "canlog.h"
 #include "file.h"
 
