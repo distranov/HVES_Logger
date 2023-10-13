@@ -19,5 +19,6 @@ typedef union {
 } time_ms_union;
 
 uint64_t time_ms_get_datetime64(void);
+uint64_t time_ms_get_ms(void);
 
 #endif

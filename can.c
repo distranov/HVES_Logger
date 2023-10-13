@@ -83,13 +83,11 @@ void* thread_body(void* arg) {
         msg.id = frame.can_id & 0x1FFFFFFF;
         msg.dlc = frame.can_dlc;
         memcpy((void*)msg.data, (void*)frame.data, 8);
-        msg.ts = time_ms_get_datetime64();
-
+        //msg.ts = time_ms_get_datetime64();
+        msg.ts = time_ms_get_ms();
         //printf("received in:%03d out:%03d\n ", can_rx_buf.idx_in, can_rx_buf.idx_out);
-
         can_rb_write(&can_rx_buf, &msg);
-
-        //usleep(1000);
+        //usleep(100);
     }    
     close(can_desc);
 

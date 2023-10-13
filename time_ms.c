@@ -21,3 +21,14 @@ uint64_t time_ms_get_datetime64(void) {
 
     return td.u64;
 }
+//-----------------------------------------------------------------------------
+uint64_t time_ms_get_ms(void) {
+    uint64_t res;
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    res = (uint64_t)tv.tv_sec*1000 + tv.tv_usec/1000;
+
+    //res = 0x1234567890123456;
+    return res; 
+}

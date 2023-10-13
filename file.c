@@ -1,6 +1,3 @@
-/*
-
-*/
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -15,53 +12,28 @@
 #include "file.h"
 #include "time_ms.h"
 
-
-#define PATH "/media/sdcard/hves_archive"
-#define PERMS 0666                     // RW для собственника, группы и ост-х 
-
 //-----------------------------------------------------------------------------
-// new name if a new hour has come
+// 
 //-----------------------------------------------------------------------------
-bool file_is_new_name(char *filename) {
-    static uint64_t prev_hour = 0;
+void file_new_name(char *filename, file_type_enum filetype) {
     time_ms_union t;
-    char path[80];
     struct stat st = {0};
+    char path[200] = {0};
     
     t.u64 = time_ms_get_datetime64();
 
-    if(t.s.minutes != prev_hour) {
-        prev_hour = t.s.minutes;
-        // проверяем и создаем папку дня          
-        if(stat(PATH, &st) == -1) { 
-            if(mkdir(PATH, PERMS) != 0) exit(1);
-        }
-        sprintf(path, "%s/%02d-%02d-%02d", PATH, t.s.day, t.s.month, t.s.year);
-        if(stat(path, &st) == -1) { 
-            if(mkdir(path, PERMS) != 0) exit(2);
-        }    
-        sprintf(filename, "%s/%02d_%02d.cxe", path, t.s.hour, t.s.minutes);    
-        return true;
-    }    
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-void file_write(const char *str) {
-    char filename[100];
-    static FILE *fp = NULL;
-
-    if(file_is_new_name(filename)) {    
-        if(fp) fclose(fp);                  
-        creat(filename, PERMS);         
-        fp = fopen(filename, "a");
-        if(fp == NULL) {
-            exit(3); 
-        }        
-        int ret = system("./hves_cleaner.bin /media/sdcard/hves_archive *.cxe 1 168 &");
+    if(filetype == FILE_TYPE_CXE) {
+        if(stat(FILE_PATH_CXE, &st) == -1) { if(mkdir(FILE_PATH_CXE, PERMS) != 0) exit(1); }
+        sprintf(path, "%s/%02d-%02d-%02d", FILE_PATH_CXE, t.s.day, t.s.month, t.s.year);
+        if(stat(path, &st) == -1) { if(mkdir(path, PERMS) != 0) exit(2); }  
+        sprintf(filename, "%s/%02d_%02d.cxe", path, t.s.hour, t.s.minutes);          
     }
-
-    if(fp) {
-        fwrite(str, 1, strlen(str), fp);       
-    }  
+    else {
+        if(stat(FILE_PATH_LOG, &st) == -1) { if(mkdir(FILE_PATH_LOG, PERMS) != 0) exit(1); }
+        sprintf(path, "%s/%02d-%02d-%02d", FILE_PATH_LOG, t.s.day, t.s.month, t.s.year);
+        if(stat(path, &st) == -1) { if(mkdir(path, PERMS) != 0) exit(2); }  
+        sprintf(filename, "%s/%02d_%02d.log", path, t.s.hour, t.s.minutes);  
+    }
+    printf("%s\n", filename);
+    return;
 }
