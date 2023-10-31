@@ -33,19 +33,37 @@ void candata_msg(can_msg_struct *msg) {
         creat(filename, 0666);         
         fp = fopen(filename, "a");
         if(fp == NULL) exit(3); 
-        ret = system("./hves_cleaner.bin /media/sdcard/hves_log *.log 1 168 &");
+        ret = system("./hves_cleaner.bin /media/sdcard/hves_log *.log 1 100000 &");
     }
     
-    data.hh = msg->ts/1000/3600 % 24;
-    data.mm = msg->ts/1000/60 % 60;
-    data.ss = msg->ts/1000 % 60;
-    //printf("%02d:%02d:%02d\n", data.hh, data.mm, data.ss);
+    data.datetime = msg->ts;
     if(fp) fwrite((void*)&data, 1, sizeof(data), fp);  
     
 }
 //-----------------------------------------------------------------------------
 void candata_parser(can_msg_struct *msg, candata_struct *data) {
+   
+    uint64_t data64;
 
+    memcpy(&data64, msg->data, 8);
 
+    if((msg->id & 0xFFFF00) == 0xFFDC00) {
+        if((msg->id & 0xFF) == 0x10) 
+            data->cell[0][msg->data[0] - 1][msg->data[1] - 1] = data64;
+        if((msg->id & 0xFF) == 0x20)
+            data->cell[1][msg->data[0] - 1][msg->data[1] - 1] = data64;           
+        return;
+    }
 
+    if((msg->id & 0xFFFF00) == 0xFFDD00) {
+        if((msg->id & 0xFF) == 0x10)
+            data->sma[0][msg->data[0] - 1] = data64;
+        if((msg->id & 0xFF) == 0x20)
+            data->sma[1][msg->data[0] - 1] = data64;           
+        return;
+    }
+
+    for(uint32_t i = 0; i < CANDATA_ID_SIZE; i++) {
+        if(msg->id == candata_id[i]) data->bat[i] = data64;
+    }
 }

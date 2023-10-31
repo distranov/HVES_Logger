@@ -33,7 +33,7 @@ void canlog_msg(can_msg_struct *msg) {
 }
 //-----------------------------------------------------------------------------
 void canlog_str(can_msg_struct *msg, char *str) {
-    sprintf(str, "%08x %01d %02x %02x %02x %02x %02x %02x %02x %02x %016llx\n",
+    sprintf(str, "%08x %01d %02x %02x %02x %02x %02x %02x %02x %02x %016lx\n",
         msg->id,
         msg->dlc,
         msg->data[0], msg->data[1], msg->data[2], msg->data[3], 
