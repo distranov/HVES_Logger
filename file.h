@@ -3,7 +3,7 @@
 
 #define FILE_PATH_LOG "/media/sdcard/hves_log"
 #define FILE_PATH_CXE "/media/sdcard/hves_data"
-#define PERMS 0666                     // RW для собственника, группы и ост-х 
+#define PERMS 0755                    // RW для собственника, группы и ост-х 
 
 typedef enum {
     FILE_TYPE_CXE = 1,
